@@ -33,7 +33,7 @@ gravatar = Gravatar(app,
 
 
 ##CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('HEROKU_POSTGRESQL_PURPLE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -43,9 +43,9 @@ login_manager.init_app(app)
 class User(db.Model, UserMixin, Base):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
-    email = db.Column(db.String(250), nullable=False, unique=True)
-    password = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(500), nullable=False)
+    email = db.Column(db.String(500), nullable=False, unique=True)
+    password = db.Column(db.String(500), nullable=False)
     posts = relationship('BlogPost', back_populates='author')
     comments = relationship('Comment', back_populates='comment_author')
 
@@ -60,11 +60,11 @@ class BlogPost(db.Model, Base):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, ForeignKey('users.id'))
     author = relationship('User', back_populates='posts')
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    subtitle = db.Column(db.String(250), nullable=False)
-    date = db.Column(db.String(250), nullable=False)
+    title = db.Column(db.String(500), unique=True, nullable=False)
+    subtitle = db.Column(db.String(500), nullable=False)
+    date = db.Column(db.String(500), nullable=False)
     body = db.Column(db.Text, nullable=False)
-    img_url = db.Column(db.String(250), nullable=False)
+    img_url = db.Column(db.String(500), nullable=False)
     comments = relationship('Comment', back_populates='parent_post')
 
 
@@ -76,7 +76,7 @@ class Comment(db.Model, Base):
     text = db.Column(db.String(500), nullable=False)
     comment_author = relationship('User', back_populates='comments')
     parent_post = relationship('BlogPost', back_populates='comments')
-    email = db.Column(db.String(128), nullable=False, unique=True)
+    email = db.Column(db.String(500), nullable=False, unique=True)
 
 db.create_all()
 
